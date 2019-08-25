@@ -34,9 +34,9 @@ freqs, power, X_new = wavelet_transform(X, n_freqs=25, fsample=100., fmin=1., fm
 Citation
 ---------
 
-If you use behavelet for you research, please cite our DOI:
+If you use behavelet for your research, please cite our DOI:
 
-[placeholder]
+[![DOI](https://zenodo.org/badge/204273245.svg)](https://zenodo.org/badge/latestdoi/204273245)
 
 for the original description of the normalized Morlet wavelet transform see the paper from [Berman et al. (2014)](https://doi.org/10.1098/rsif.2014.0672):
 
