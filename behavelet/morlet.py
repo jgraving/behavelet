@@ -23,7 +23,9 @@ try:
     import cupy as cp
 except ModuleNotFoundError:
     cp = None
-    warnings.warn('CuPy was not found, so GPU functionality is unavailable')
+    warnings.warn('CuPy was not found, so GPU functionality is unavailable. ' 
+                   'See https://github.com/cupy/cupy#installation '
+                   'for installation instructions')
 
 __all__ = ['wavelet_transform']
 
@@ -246,7 +248,10 @@ def wavelet_transform(X, n_freqs, fsample, fmin, fmax,
 
     if gpu is True and cp is None:
         gpu = False
-        warnings.warn('`gpu` set to True, but CuPy was not found, using CPU with {:+.0f} thread(s).'.format(n_jobs))
+        warnings.warn('`gpu` set to True, but CuPy was not found, '
+                      'using CPU with {:+.0f} thread(s). '
+                      'See https://github.com/cupy/cupy#installation '
+                      'for installation instructions'.format(n_jobs))
 
     X = X.astype(np.float32)
     # n_samples = X.shape[0]
