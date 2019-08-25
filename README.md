@@ -1,7 +1,11 @@
 behavelet: a normalized Morlet wavelet transform for behavioral mapping
 ============
 
-behavelet is a Python implementation of the normalized Morlet wavelet transform for behavioral mapping from [Berman et al. (2014)](https://doi.org/10.1098/rsif.2014.0672). It runs on the CPU using numpy and multiprocessing or on the GPU using [CuPy](https://github.com/cupy/cupy).  This code was adapted to Python using [the original MotionMapper code from Gordon Berman](https://github.com/gordonberman/MotionMapper)
+behavelet is a Python implementation of the normalized Morlet wavelet transform for behavioral mapping from [Berman et al. (2014)](https://doi.org/10.1098/rsif.2014.0672).
+
+It runs on the CPU using numpy and multiprocessing or on the GPU using [CuPy](https://github.com/cupy/cupy).
+
+This code was adapted to Python using [the original MotionMapper code](https://github.com/gordonberman/MotionMapper) from Gordon Berman.
 
 How to use behavelet
 ------------
@@ -10,15 +14,17 @@ Here is an example of how to use behavelet with a randomly generated dataset on 
 from behavelet import wavelet_transform
 import numpy as np
 
-X = np.random.normal(size=(10000, 10))
+n_samples = 10000
+n_features = 10
+X = np.random.normal(size=(n_samples, n_features))
+freqs, power, X_new = wavelet_transform(X, n_freqs=25, fsample=100., fmin=1., fmax=50.)
+```
+use the `n_jobs` argument to parallelize the computations across multiple threads:
+```python
 freqs, power, X_new = wavelet_transform(X, n_freqs=25, fsample=100., fmin=1., fmax=50., n_jobs=-1)
 ```
-and on the GPU:
+and use the `gpu` argument to run it on the GPU:
 ```python
-from behavelet import wavelet_transform
-import numpy as np
-
-X = np.random.normal(size=(10000, 10))
 freqs, power, X_new = wavelet_transform(X, n_freqs=25, fsample=100., fmin=1., fmax=50., gpu=True)
 ```
 
