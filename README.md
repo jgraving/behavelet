@@ -7,7 +7,7 @@ It runs on the CPU using numpy and multiprocessing or on the GPU using [CuPy](ht
 
 This code was adapted to Python using [the original MotionMapper code](https://github.com/gordonberman/MotionMapper) from Gordon Berman et al.
 
-How to use behavelet
+Quick Start
 ------------
 Here is an example of how to use behavelet with a randomly generated dataset on the CPU:
 ```python
