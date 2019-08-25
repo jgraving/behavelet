@@ -1,3 +1,3 @@
-from morlet import *
+from .morlet import *
 
 __version__ = '0.0.1'
