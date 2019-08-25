@@ -27,6 +27,7 @@ and use the `gpu` argument to run it on the GPU with [CuPy](https://github.com/c
 ```python
 freqs, power, X_new = wavelet_transform(X, n_freqs=25, fsample=100., fmin=1., fmax=50., gpu=True)
 ```
+`freqs` is a `(n_freqs,)` shaped array of the frequencies used for the transform, `power` is a `(n_samples,)` shaped array with the sum of the total power for the wavelet coefficients in each sample, and `X_new` is a `(n_samples, n_freqs*n_features)` array of the wavelet coefficients.
 
 Citation
 ---------
