@@ -9,7 +9,7 @@ This code was adapted to Python using [the original MotionMapper code](https://g
 
 Quick Start
 ------------
-Here is an example of how to use behavelet with a randomly generated dataset on the CPU:
+Here is an example of how to use behavelet on the CPU with a randomly generated dataset:
 ```python
 from behavelet import wavelet_transform
 import numpy as np
@@ -17,6 +17,7 @@ import numpy as np
 n_samples = 10000
 n_features = 10
 X = np.random.normal(size=(n_samples, n_features))
+
 freqs, power, X_new = wavelet_transform(X, n_freqs=25, fsample=100., fmin=1., fmax=50.)
 ```
 use the `n_jobs` argument to parallelize the computations across multiple threads:
