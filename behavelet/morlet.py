@@ -14,10 +14,16 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 """
-
-import cupy as cp
 import numpy as np
+import warnings
 import multiprocessing
+
+
+try:
+    import cupy as cp
+except ModuleNotFoundError:
+    cp = None
+    warnings.warn('CuPy was not found, so GPU functionality is unavailable')
 
 __all__ = ['wavelet_transform']
 
@@ -100,7 +106,11 @@ def _morlet_fft_convolution(X, freqs, scales, dtime, omega0=5.0, gpu=False):
         The transformed signal.
     """
     if gpu:
-        backend = cp
+        if cp is not None:
+            backend = cp
+        else:
+            gpu = False
+            warnings.warn('`gpu` set to True, but CuPy was not found, so GPU functionality is unavailable')
     else:
         backend = np
     n_samples = X.shape[0]

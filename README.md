@@ -26,8 +26,6 @@ for the original description of the normalized Morlet wavelet transform see the 
 Installation
 ------------
 
-If you wish to use the GPU version, you may need to [install CuPy manually](https://github.com/cupy/cupy#installation).
-
 Install the development version with pip:
 ```bash
 pip install git+https://www.github.com/jgraving/behavelet.git
@@ -38,6 +36,8 @@ You can also install from within Python rather than using the command line, eith
 import sys
 !{sys.executable} -m pip install git+https://www.github.com/jgraving/behavelet.git
 ```
+
+If you wish to use the GPU version, you must [install CuPy manually](https://github.com/cupy/cupy#installation).
 
 Development
 -------------
