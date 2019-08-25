@@ -39,6 +39,15 @@ If you use behavelet for your research, please cite our DOI:
 
 [![DOI](https://zenodo.org/badge/204273245.svg)](https://zenodo.org/badge/latestdoi/204273245)
 
+      @misc{graving2019behavelet,
+            title={behavelet: a wavelet transform for mapping behavior},
+            author={Graving, Jacob M},
+            month={aug},
+            year={2019},
+            doi={10.5281/zenodo.3376742},
+            url={https://doi.org/10.5281/zenodo.3376742}
+            }
+
 for the original description of the normalized Morlet wavelet transform see the paper from [Berman et al. (2014)](https://doi.org/10.1098/rsif.2014.0672):
 
     @article{berman2014mapping,
