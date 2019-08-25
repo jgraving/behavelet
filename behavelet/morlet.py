@@ -228,6 +228,8 @@ def wavelet_transform(X, n_freqs, fsample, fmin, fmax,
 
     Returns:
     ========
+    freqs : ndarray, shape (n_freqs)
+        The frequencies used for the wavelet transform
     power : ndarray, shape (n_samples)
         The total power for each row in X_new
     X_new : ndarray, shape (n_samples, n_features*n_freqs)
