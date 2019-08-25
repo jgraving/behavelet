@@ -106,13 +106,10 @@ def _morlet_fft_convolution(X, freqs, scales, dtime, omega0=5.0, gpu=False):
         The transformed signal.
     """
     if gpu:
-        if cp is not None:
-            backend = cp
-        else:
-            gpu = False
-            warnings.warn('`gpu` set to True, but CuPy was not found, using CPU with `n_jobs`.')
+        backend = cp
     else:
         backend = np
+
     n_samples = X.shape[0]
     # n_freqs = freqs.shape[0]
 
@@ -246,6 +243,11 @@ def wavelet_transform(X, n_freqs, fsample, fmin, fmax,
     Based on code from Gordon J. Berman et al.
     (https://github.com/gordonberman/MotionMapper)
     """
+
+    if gpu is True and cp is None:
+        gpu = False
+        warnings.warn('`gpu` set to True, but CuPy was not found, using CPU with {:+.0f} thread(s).'.format(n_jobs))
+
     X = X.astype(np.float32)
     # n_samples = X.shape[0]
     # n_features = X.shape[1]
