@@ -23,7 +23,7 @@ use the `n_jobs` argument to parallelize the computations across multiple thread
 ```python
 freqs, power, X_new = wavelet_transform(X, n_freqs=25, fsample=100., fmin=1., fmax=50., n_jobs=-1)
 ```
-and use the `gpu` argument to run it on the GPU:
+and use the `gpu` argument to run it on the GPU with [CuPy](https://github.com/cupy/cupy):
 ```python
 freqs, power, X_new = wavelet_transform(X, n_freqs=25, fsample=100., fmin=1., fmax=50., gpu=True)
 ```
