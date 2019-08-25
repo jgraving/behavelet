@@ -1,11 +1,11 @@
-behavelet: a normalized Morlet wavelet transform for behavioral mapping
+behavelet: a wavelet transform for mapping behavior
 ============
 
 behavelet is a Python implementation of the normalized Morlet wavelet transform for behavioral mapping from [Berman et al. (2014)](https://doi.org/10.1098/rsif.2014.0672).
 
 It runs on the CPU using numpy and multiprocessing or on the GPU using [CuPy](https://github.com/cupy/cupy).
 
-This code was adapted to Python using [the original MotionMapper code](https://github.com/gordonberman/MotionMapper) from Gordon Berman.
+This code was adapted to Python using [the original MotionMapper code](https://github.com/gordonberman/MotionMapper) from Gordon Berman et al.
 
 How to use behavelet
 ------------

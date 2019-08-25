@@ -20,9 +20,9 @@ import sys
 import warnings
 from setuptools import setup, find_packages
 
-DESCRIPTION = "a normalized Morlet wavelet for behavioral mapping from Berman et al. (2014)"
+DESCRIPTION = "behavelet: a wavelet transform for mapping behavior"
 LONG_DESCRIPTION = """\
-a normalized Morlet wavelet for behavioral mapping from Berman et al. (2014)
+behavelet is a Python implementation of the normalized Morlet wavelet transform for behavioral mapping from [Berman et al. (2014)](https://doi.org/10.1098/rsif.2014.0672).
 """
 
 DISTNAME = 'behavelet'
