@@ -110,7 +110,7 @@ def _morlet_fft_convolution(X, freqs, scales, dtime, omega0=5.0, gpu=False):
             backend = cp
         else:
             gpu = False
-            warnings.warn('`gpu` set to True, but CuPy was not found, so GPU functionality is unavailable')
+            warnings.warn('`gpu` set to True, but CuPy was not found, using CPU with `n_jobs`.')
     else:
         backend = np
     n_samples = X.shape[0]
