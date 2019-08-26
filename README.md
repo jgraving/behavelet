@@ -1,5 +1,8 @@
 behavelet: a wavelet transform for mapping behavior
 ============
+<p align="center">
+<img src="https://github.com/jgraving/behavelet/blob/master/assets/wavelet.png" max-height:256px>
+</p>
 
 behavelet is a Python implementation of the normalized Morlet wavelet transform for behavioral mapping from [Berman et al. (2014)](https://doi.org/10.1098/rsif.2014.0672).
 
