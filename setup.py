@@ -21,35 +21,35 @@ import warnings
 from setuptools import setup, find_packages
 
 DESCRIPTION = "behavelet: a wavelet transform for mapping behavior"
-LONG_DESCRIPTION = """\
-behavelet is a Python implementation of the normalized Morlet wavelet transform for behavioral mapping from [Berman et al. (2014)](https://doi.org/10.1098/rsif.2014.0672).
-"""
-
-DISTNAME = 'behavelet'
-MAINTAINER = 'Jacob Graving <jgraving@gmail.com>'
-MAINTAINER_EMAIL = 'jgraving@gmail.com'
-URL = 'https://github.com/jgraving/behavelet'
-LICENSE = 'Apache 2.0'
-DOWNLOAD_URL = 'https://github.com/jgraving/behavelet.git'
-VERSION = '0.0.1'
+DISTNAME = "behavelet"
+MAINTAINER = "Jacob Graving <jgraving@gmail.com>"
+MAINTAINER_EMAIL = "jgraving@gmail.com"
+URL = "https://github.com/jgraving/behavelet"
+LICENSE = "Apache 2.0"
+DOWNLOAD_URL = "https://github.com/jgraving/behavelet.git"
+VERSION = "0.0.1"
 
 
 if __name__ == "__main__":
 
-    setup(name=DISTNAME,
-          author=MAINTAINER,
-          author_email=MAINTAINER_EMAIL,
-          maintainer=MAINTAINER,
-          maintainer_email=MAINTAINER_EMAIL,
-          description=DESCRIPTION,
-          long_description=LONG_DESCRIPTION,
-          license=LICENSE,
-          url=URL,
-          version=VERSION,
-          download_url=DOWNLOAD_URL,
-          install_requires=['numpy'],
-          packages=find_packages(),
-          zip_safe=False,
-          classifiers=['Intended Audience :: Science/Research',
-                       'Programming Language :: Python :: 3']
-          )
+    setup(
+        name=DISTNAME,
+        author=MAINTAINER,
+        author_email=MAINTAINER_EMAIL,
+        maintainer=MAINTAINER,
+        maintainer_email=MAINTAINER_EMAIL,
+        description=DESCRIPTION,
+        long_description=open("README.md").read(),
+        long_description_content_type="text/markdown",
+        license=LICENSE,
+        url=URL,
+        version=VERSION,
+        download_url=DOWNLOAD_URL,
+        install_requires=["numpy"],
+        packages=find_packages(),
+        zip_safe=False,
+        classifiers=[
+            "Intended Audience :: Science/Research",
+            "Programming Language :: Python :: 3",
+        ],
+    )

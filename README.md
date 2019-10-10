@@ -66,6 +66,10 @@ for the original description of the normalized Morlet wavelet transform see the 
 
 Installation
 ------------
+Install the latest stable version with pip:
+```bash
+pip install behavelet
+```
 
 Install the development version with pip:
 ```bash
