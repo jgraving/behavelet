@@ -27,7 +27,7 @@ MAINTAINER_EMAIL = "jgraving@gmail.com"
 URL = "https://github.com/jgraving/behavelet"
 LICENSE = "Apache 2.0"
 DOWNLOAD_URL = "https://github.com/jgraving/behavelet.git"
-VERSION = "0.0.1"
+VERSION = "0.0.2"
 
 
 if __name__ == "__main__":
