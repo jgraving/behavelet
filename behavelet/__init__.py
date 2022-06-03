@@ -1,3 +1,3 @@
-from .morlet import *
+from behavelet.morlet import *
 
 __version__ = '0.0.2'
