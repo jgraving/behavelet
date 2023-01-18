@@ -21,31 +21,55 @@ LOG2 = np.log(2)
 
 
 def logsumexp(x, axis=None, keepdims=False):
+    """
+    Calculates the log of the sum of the exponentiated elements of an input array.
+
+    This function is useful for avoiding numerical underflow or overflow when calculating the sum of a large number of exponential values.
+
+    Parameters:
+    -----------
+    x : numpy.ndarray
+        Input array.
+    axis : int or None (default = None)
+        The axis along which to perform the sum. If None, the sum is taken over all elements of the array.
+    keepdims : bool (default = False)
+        If True, the output will have the same number of dimensions as the input, with the specified axis having size 1. If False, the output will have one fewer dimensions than the input.
+
+    Returns:
+    --------
+    logsumexp : float
+        The log of the sum of the exponentiated elements of the input array.
+    """
     max_x = np.max(x, axis=axis, keepdims=True)
-    return max_x + np.log(np.sum(np.exp(x - max_x), axis=axis, keepdims=True))
+    result = max_x + np.log(np.sum(np.exp(x - max_x), axis=axis, keepdims=True))
+    if not keepdims:
+        result = np.squeeze(result, axis=axis)
+    return result
 
 
 def morlet_conj_ft(omegas, omega0=5.0):
-"""
-Returns a Fourier conjugate Morlet wavelet.
+    """
+    Returns a Fourier conjugate Morlet wavelet.
 
-The wavelet is defined as:
+    The time-frequency trade-off in the complex Morlet wavelet transform is controlled by the omega0 and omegas parameters. A larger value of omega0 corresponds to a higher time resolution and a lower frequency resolution, while a larger value of omegas corresponds to a lower time resolution and a higher frequency resolution.
 
-pi**(-0.25) * exp(-0.5 * (omegas - omega0)**2)
-= exp((-0.25 * log(pi)) + (-0.5 * (omegas - omega0)**2))
+    The wavelet is defined as:
 
-Parameters:
-===========
-omegas : np.ndarray
-    Dimensionless parameter that controls the width of the frequency band of the wavelet. It is related to the standard deviation of the wavelet's frequency distribution. A larger value of omegas corresponds to a wavelet with a wider frequency band and a lower central frequency.
-omega0 : float (default=5.0)
-    Dimensionless parameter that determines the central frequency of the wavelet. It is related to the number of oscillations that the wavelet undergoes within a fixed number of standard deviations from its center. A larger value of omega0 corresponds to a wavelet with a higher central frequency and a narrower frequency band.
+        pi**(-0.25) * exp(-0.5 * (omegas - omega0)**2)
+        = exp((-0.25 * log(pi)) + (-0.5 * (omegas - omega0)**2))
 
-Returns:
-========
-ft_wavelet : np.ndarray
-    Array of Fourier conjugate wavelets.
-"""
+    Parameters:
+    ===========
+    omegas : numpy.ndarray
+        Dimensionless parameter that controls the width of the frequency band of the wavelet. It is related to the standard deviation of the wavelet's frequency distribution. A larger value of omegas corresponds to a wavelet with a wider frequency band and a lower central frequency.
+    omega0 : float (default=5.0)
+        Dimensionless parameter that determines the central frequency of the wavelet. It is related to the number of oscillations that the wavelet undergoes within a fixed number of standard deviations from its center. A larger value of omega0 corresponds to a wavelet with a higher central frequency and a narrower frequency band.
+
+    Returns:
+    ========
+    ft_wavelet : numpy.ndarray
+        Array of Fourier conjugate wavelets.
+    """
     # (
     #    (np.pi**-0.25)
     #    * torch.exp(-0.5 * (omegas - omega0)**2)
@@ -54,10 +78,14 @@ ft_wavelet : np.ndarray
 
 
 def morlet_fft_convolution(
-    x, log_scales, dtime, padding="same", density=True, omega0=5.0
+    x, log_scales, sample_interval, unpadding, density=True, omega0=5.0
 ):
     """
     Calculates a Morlet continuous wavelet transform for a given signal across a range of frequencies.
+
+    The time-frequency trade-off in the complex Morlet wavelet transform is controlled by the omega0 and omegas parameters. A larger value of omega0 corresponds to a higher time resolution and a lower frequency resolution, while a larger value of omegas corresponds to a lower time resolution and a higher frequency resolution.
+
+    This implementation adjusts the output for disproportionately large wavelet response at low frequencies and removes amplitude fluctuations by normalizing the power spectrum.
 
     Parameters:
     ===========
@@ -65,10 +93,10 @@ def morlet_fft_convolution(
         A batch of multichannel sequences.
     log_scales : numpy.ndarray, shape (1, 1, freqs, 1)
         A tensor of logarithmic scales.
-    dtime : float
+    sample_interval : float
         Change in time per sample. The inverse of the sampling frequency.
-    padding : str (default = "same")
-        Whether to return the "same" or "valid" spectrogram (without edge effects).
+    unpadding : int
+        Amount of extra padding to remove, i.e. to return the valid part of the spectrogram without edge effects.
     density : bool (default = True)
         Whether to normalize so the power spectrum sums to one. This effectively removes amplitude fluctuations.
     omega0 : float
@@ -79,21 +107,11 @@ def morlet_fft_convolution(
     out : numpy.ndarray, shape (batch, channels, freqs, sequence)
         The transformed signal.
     """
-
     n_sequence = x.shape[-1]
 
     # Pad with extra zero if needed
     pad_sequence = n_sequence % 2 != 0
     x = np.pad(x, ((0, 0), (0, 0), (0, 1))) if pad_sequence else x
-
-    unpadding = 0
-    if padding == "valid":
-        # Get the largest scale
-        largest_scale = np.max(log_scales)
-        # Calculate the size of the wavelet function
-        L = 2 * np.pi / np.exp(largest_scale)
-        # Calculate the size of the valid region
-        unpadding = int(np.ceil(L / 2))
 
     # Set index to remove the extra zero if added
     idx0 = (n_sequence // 2) + unpadding
@@ -110,7 +128,10 @@ def morlet_fft_convolution(
     # Calculate the omega values
     n_padded = x.shape[-1]
     omegas = (
-        -2 * np.pi * np.arange(-n_padded // 2, n_padded // 2) / (n_padded * dtime)
+        -2
+        * np.pi
+        * np.arange(-n_padded // 2, n_padded // 2)
+        / (n_padded * sample_interval)
     )[
         None, None, None
     ]  # (sequence,) -> (batch, channels, freqs, sequence)
@@ -151,9 +172,9 @@ class BermanWavelet:
     """
     Applies a Morlet continuous wavelet transform to a batch of multi-channel sequences across a range of frequencies.
 
-    This is an implementation of the continuous wavelet transform described in Berman et al. 2014 [1].
+    The time-frequency trade-off in the complex Morlet wavelet transform is controlled by the omega0 and omegas parameters. A larger value of omega0 corresponds to a higher time resolution and a lower frequency resolution, while a larger value of omegas corresponds to a lower time resolution and a higher frequency resolution. The value of omegas is derived from the values of fmin, fmax, and n_freqs, which control the range and resolution of the frequencies considered in the transform.
 
-    The output is adjusted for disproportionately large wavelet response at low frequencies by scaling the response amplitude to a sine wave of the same frequency. Amplitude fluctuations are removed by normalizing the power spectrum at each sample.
+    This implementation from Berman et al. [1] adjusts the output for disproportionately large wavelet response at low frequencies and removes amplitude fluctuations by normalizing the power spectrum.
 
     Parameters:
     ===========
@@ -162,7 +183,7 @@ class BermanWavelet:
     fmin : float
         Minimum frequency of interest for the wavelet transform (in Hz).
     fmax : float
-        Maximum frequency of interest for the wavelet transform (in Hz). Typically the Nyquist frequency of the signal (0.5 * fsample).
+        Maximum frequency of interest for the wavelet transform (in Hz). Typically the Nyquist frequency of the signal (fsample/2).
     n_freqs : int
         Number of frequencies to consider from fmin to fmax (inclusive).
     density : bool (default = True)
@@ -188,6 +209,7 @@ class BermanWavelet:
     ======
     Based on code from Gordon J. Berman et al. (https://github.com/gordonberman/MotionMapper)
     """
+
     def __init__(
         self,
         fsample,
@@ -197,11 +219,10 @@ class BermanWavelet:
         padding="same",
         density=True,
         omega0=5.0,
-        output_sequence=True,
     ):
         super().__init__()
         self.fsample = fsample
-        self.dtime = 1 / fsample
+        self.sample_interval = 1 / fsample
         self.fmin = fmin
         self.fmax = fmax if fmax is not None else fsample / 2
         self.n_freqs = n_freqs
@@ -223,13 +244,23 @@ class BermanWavelet:
             - LOG_PI
             - np.log(self.freqs)
         )
+        self.unpadding = 0
+        if self.padding == "valid":
+            # Get the largest scale
+            largest_scale = np.max(self.log_scales)
+            # Calculate the size of the wavelet function
+            # L = 2 * np.pi / np.exp(largest_scale)
+            L = np.exp(LOG_PI - largest_scale)
+            # Calculate the size of the valid region
+            # self.unpadding = int(np.ceil(L / 2))
+            self.unpadding = int(np.ceil(L))
 
     def __call__(self, x):
-        out = morlet_fft_convolution(
-            x, self.log_scales, self.dtime, self.padding, self.density, self.omega0
-        )
-        return (
-            out
-            if not self.output_sequence
-            else out.reshape(out.shape[0], out.shape[1] * out.shape[2], out.shape[3])
+        return morlet_fft_convolution(
+            x,
+            self.log_scales,
+            self.sample_interval,
+            self.unpadding,
+            self.density,
+            self.omega0,
         )
