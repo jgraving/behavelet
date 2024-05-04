@@ -229,7 +229,6 @@ class BermanWavelet:
         self.padding = padding
         self.density = density
         self.omega0 = omega0
-        self.output_sequence = output_sequence
         self.freqs = np.logspace(
             np.log(self.fmin) / LOG2,
             np.log(self.fmax) / LOG2,
@@ -245,15 +244,18 @@ class BermanWavelet:
             - np.log(self.freqs)
         )
         self.unpadding = 0
+
         if self.padding == "valid":
-            # Get the largest scale
-            largest_scale = np.max(self.log_scales)
-            # Calculate the size of the wavelet function
-            # L = 2 * np.pi / np.exp(largest_scale)
-            L = np.exp(LOG_PI - largest_scale)
-            # Calculate the size of the valid region
-            # self.unpadding = int(np.ceil(L / 2))
-            self.unpadding = int(np.ceil(L))
+            # Calculate the smallest frequency to determine the largest wavelet scale
+            smallest_frequency = np.min(self.freqs)
+            # Largest wavelet scale in time domain
+            largest_wavelet_scale = (self.omega0 + np.sqrt(2 + self.omega0 ** 2)) / (
+                4 * np.pi * smallest_frequency
+            )
+            # Calculate the time duration of the wavelet based on the sampling frequency
+            wavelet_time_duration = largest_wavelet_scale
+            # Determine padding needed based on the wavelet duration converted to samples
+            self.unpadding = int(np.ceil(wavelet_time_duration * fsample))
 
     def __call__(self, x):
         return morlet_fft_convolution(
